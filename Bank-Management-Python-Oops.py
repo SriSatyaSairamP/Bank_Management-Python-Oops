@@ -1,19 +1,29 @@
-from abc import ABC, abstractmethod
+from abc import ABC,abstractmethod
 
 class Account(ABC):
 
     def __init__(self,name,balance):
         self.name=name
-        self.__balance=balance
+        self._validate_amount(balance)
+        self.__balance=float(balance)
+
+    def _validate_amount(self,amount):
+        if not isinstance(amount,(int,float)):
+            raise TypeError("Amount should be NUMERIC!")
+        elif amount<0:
+            raise ValueError("Amount Should not be Negative.")
 
     def get_balance(self):
         return self.__balance
 
-    def set_balance(self,balance):
-        self.__balance=balance
+    def set_balance(self,amount):
+        self._validate_amount(amount)
+        self.__balance=float(amount)
 
     def deposit(self,amount):
-        self.__balance+=amount
+        self._validate_amount(amount)
+        new_balance=self.get_balance()+amount
+        self.set_balance(new_balance)
         print(f"₹{amount} deposited successfully")
 
     @abstractmethod
@@ -22,28 +32,33 @@ class Account(ABC):
 
     def display(self):
         print(f"\nAccount Holder: {self.name}")
-        print(f"Balance: {self.__balance}")
+        print(f"Balance: {self.get_balance()}")
+
+    def _deduct(self,amount):
+        new_balance=self.get_balance()-amount
+        self.set_balance(new_balance)
 
 class SavingsAccount(Account):
 
     def withdraw(self,amount):
+        self._validate_amount(amount)
         if amount>self.get_balance():
             print("Insufficient Balance")
         elif amount>40000:
-            print("Daily Limit Exceeded!")
+            print("Daily Limit Exceeded")
         else:
-            new_balance=self.get_balance()-amount
-            self.set_balance(new_balance)
+            self._deduct(amount)
             print(f"₹{amount} withdrawn successfully")
+
 
 class CurrentAccount(Account):
 
-    def withdraw(self,amount):
-        if amount>self.get_balance():
+    def withdraw(self, amount):
+        self._validate_amount(amount)
+        if amount > self.get_balance():
             print("Insufficient Balance")
         else:
-            new_balance=self.get_balance()-amount
-            self.set_balance(new_balance)
+            self._deduct(amount)
             print(f"₹{amount} withdrawn successfully")
 
 class Bank:
@@ -54,8 +69,8 @@ class Bank:
     def __add__(self,other):
         return Bank(self.total+other.total)
 
-    def show_total(self):
-        print(f"\nTotal Bank Balance: {self.total}")
+    def display_total(self):
+        print(f"\nTotal Bank Balance: ₹{self.total}")
 
 acc1=SavingsAccount("Sai",10000)
 acc2=CurrentAccount("Ishaan",20000)
