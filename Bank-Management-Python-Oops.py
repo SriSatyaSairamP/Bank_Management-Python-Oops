@@ -83,7 +83,7 @@ acc2.display()
 
 bank1=Bank(acc1.get_balance())
 bank2=Bank(acc2.get_balance())
-bank1.show_total()
+bank1.display_total()
 
 total=bank1+bank2
-total.show_total()
+total.display_total()
