@@ -2,9 +2,11 @@ from abc import ABC,abstractmethod
 
 class Account(ABC):
 
+    
     def __init__(self,name,balance):
         self.name=name
         self._validate_amount(balance)
+        self.transactions =[]
         self.__balance=float(balance)
 
     def _validate_amount(self,amount):
@@ -24,6 +26,7 @@ class Account(ABC):
         self._validate_amount(amount)
         new_balance=self.get_balance()+amount
         self.set_balance(new_balance)
+        self.transactions.append(f"+₹{amount} Deposited")
         print(f"₹{amount} deposited successfully")
 
     @abstractmethod
@@ -38,6 +41,15 @@ class Account(ABC):
         new_balance=self.get_balance()-amount
         self.set_balance(new_balance)
 
+    def show_transactions(self):
+        print(f"\nTransaction History - {self.name}")
+        if not self.transactions:
+            print("No transcations found")
+        else:
+            for transaction in self.transactions:
+                print(transaction)
+
+
 class SavingsAccount(Account):
 
     def withdraw(self,amount):
@@ -48,6 +60,7 @@ class SavingsAccount(Account):
             print("Daily Limit Exceeded")
         else:
             self._deduct(amount)
+            self.transactions.append(f"-₹{amount} Withdrawn")
             print(f"₹{amount} withdrawn successfully")
 
 
@@ -59,6 +72,7 @@ class CurrentAccount(Account):
             print("Insufficient Balance")
         else:
             self._deduct(amount)
+            self.transactions.append(f"-₹{amount} Withdrawn")
             print(f"₹{amount} withdrawn successfully")
 
 class Bank:
@@ -78,6 +92,7 @@ acc2=CurrentAccount("Ishaan",20000)
 acc1.display()
 print(acc2.get_balance())
 acc1.deposit(5000)
+acc1.withdraw(2000)
 acc2.withdraw(2000)
 acc2.display()
 
@@ -87,3 +102,5 @@ bank1.display_total()
 
 total=bank1+bank2
 total.display_total()
+
+acc1.show_transactions()
