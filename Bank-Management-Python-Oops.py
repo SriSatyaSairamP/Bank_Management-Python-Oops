@@ -36,9 +36,10 @@ class Account(ABC):
         pass
 
     def display(self):
-        print(f"\nAccount NUmber: {self.account_number}")
+        print(f"\nAccount Number: {self.account_number}")
         print(f"Account Holder: {self.name}")
-        print(f"Balance: {self.get_balance()}")
+        print(f"Account Type: {self.__class__.__name__}")
+        print(f"Balance: ₹{self.get_balance()}")
 
     def _deduct(self,amount):
         new_balance=self.get_balance()-amount
@@ -48,6 +49,7 @@ class Account(ABC):
         print(f"\nTransaction History")
         print(f"Account Number: {self.account_number}")
         print(f"Account Holder: {self.name}")
+        print(f"Account Type: {self.__class__.__name__}")
         if not self.transactions:
             print("No transactions found")
         else:
@@ -108,4 +110,4 @@ bank1.display_total()
 total=bank1+bank2
 total.display_total()
 
-acc1.show_transactions()
+acc2.show_transactions()
